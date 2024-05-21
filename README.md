@@ -2,6 +2,8 @@
 This code is provided by Dr. Goan
 https://www.academicblock.com
 
+Implementation of the similar logic can also be seen at https://www.academicblock.com/technology/web-tools/convert-an-image-to-black-and-white
+
 This Matlab GUI code will allow user to upload and then rotate image in counter clock and clockwise direction. 
 Uploaded image will also be converted to Grayscale image.
 user then can save the rotated image.
