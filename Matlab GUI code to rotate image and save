@@ -1,1 +1,71 @@
+% This code is provided by Dr. Goan
+% https://www.academicblock.com
+% This code will, upload, convert image to grayscale, rotate, and save image.
 
+function imageRotationAdjuster
+    % Create a figure window
+    fig = figure('Name', 'Image Rotation Adjuster', 'NumberTitle', 'off', ...
+                 'MenuBar', 'none', 'ToolBar', 'none', 'Position', [100, 100, 800, 600]);
+
+    % Add a panel for the image
+    imgPanel = uipanel('Parent', fig, 'Position', [0.1 0.3 0.8 0.6]);
+
+    % Add an axis to display the image
+    ax = axes('Parent', imgPanel);
+
+    % Add a button to upload an image
+    uploadButton = uicontrol('Style', 'pushbutton', 'String', 'Upload Image', ...
+                             'Position', [100, 50, 100, 30], 'Callback', @uploadImage);
+
+    % Add a slider to rotate the image
+    rotationSlider = uicontrol('Style', 'slider', 'Min', -180, 'Max', 180, 'Value', 0, ...
+                               'Position', [250, 50, 300, 30], 'Callback', @rotateImage);
+
+    % Add a text label for the slider
+    sliderLabel = uicontrol('Style', 'text', 'Position', [250, 90, 300, 20], ...
+                            'String', 'Rotate Image (degrees)');
+
+    % Add a button to save the rotated image
+    saveButton = uicontrol('Style', 'pushbutton', 'String', 'Save Image', ...
+                           'Position', [600, 50, 100, 30], 'Callback', @saveImage);
+
+    % Initialize variables to store the image and rotated image
+    img = [];
+    rotatedImg = [];
+
+    function uploadImage(~, ~)
+        % Let the user select an image file
+        [fileName, pathName] = uigetfile({'*.jpg;*.jpeg;*.png;*.bmp', 'Image Files'}, 'Select an Image');
+        if fileName == 0
+            return;
+        end
+        imgPath = fullfile(pathName, fileName);
+        img = imread(imgPath);
+        % Convert the image to grayscale
+        img = rgb2gray(img);
+        rotatedImg = img; % Initially, the rotated image is the same as the original
+        imshow(img, 'Parent', ax);
+        title(ax, 'Grayscale Image');
+    end
+
+    function rotateImage(~, ~)
+        if isempty(img)
+            return;
+        end
+        rotationAngle = get(rotationSlider, 'Value');
+        rotatedImg = imrotate(img, rotationAngle, 'bilinear', 'crop');
+        imshow(rotatedImg, 'Parent', ax);
+        title(ax, sprintf('Rotated Image (%.1f degrees)', rotationAngle));
+    end
+
+    function saveImage(~, ~)
+        if isempty(rotatedImg)
+            return;
+        end
+        [fileName, pathName] = uiputfile({'*.jpg', 'JPEG Image'; '*.png', 'PNG Image'; '*.bmp', 'Bitmap Image'}, 'Save Image As');
+        if fileName == 0
+            return;
+        end
+        imwrite(rotatedImg, fullfile(pathName, fileName));
+    end
+end
